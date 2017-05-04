@@ -44,6 +44,10 @@ io.on('connection', function (socket) {
     socket.broadcast.emit('typing', { username: socket.username, message: " is typing..." });
   });
 
+  socket.on('stoppedTyping', function() {
+    socket.broadcast.emit('stoppedTyping', socket.username)
+  })
+
   socket.on('startPrivateChat', function (id) {
     socket.broadcast.to(id).emit('startPrivateChat', socket.id, socket.username);
   });

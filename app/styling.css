@@ -11,12 +11,13 @@
       height: calc(100% - 30vh);
     }
 
-    #loginForm {
+    #loginForm form {
         display: flex;
         flex-direction: column;
         max-width: 400px;
         margin: auto;
         margin-top: 30vh;
+        position: relative;
         font-size: 25px;
         font-weight: bold;
         border: 2px solid #13a8af;
@@ -84,8 +85,8 @@
     
     form button {
       width: 11%;
-      background: rgb(130, 224, 255);
-      border: 2px solid rgb(130, 224, 255);
+      background: #13a8af;
+      border: 2px solid #13a8af;
       padding: 10px;
       border-radius: 5px;
       margin-bottom: 5px;
@@ -204,7 +205,7 @@
     .ToggleGeneralButtonFalse, .PrivateChatButtonFalse {
         width: 100%;
         min-height: 30px;
-        font-size: 14px;
+        font-size: 16px;
         color: goldenrod;   
         background-color: white;
         word-wrap: break-word;

@@ -1,10 +1,12 @@
 var isTyping = false;
 var socket = io();
-function LogIn() {
+
+$('#loginSubmit').submit(function () {
   socket.emit('login', $('#login').val());
   $('#messageDiv').toggle();
   $('#loginForm').hide();
-}
+  return false;
+});
 
 //Default function that socket added, this takes care of all "socket.on" calls
 $(function () {
@@ -33,6 +35,8 @@ $(function () {
   socket.on('disconnect', function (msg) {
     $('#messages').append($('<li>').html('<p><b>' + msg.username + '</b>' + msg.message + '</p>'));
     $('#usersOnlineList #' + msg.username.replace(/\s/g, '')).remove();
+    $('#messages #' + msg.username.replace(/\s/g, '')).remove();
+    AutoScrollGeneral();
   });
 
   socket.on('joined', function (msg) {
@@ -55,6 +59,10 @@ $(function () {
     AutoScrollGeneral();
   });
 
+  socket.on('stoppedTyping', function (username) {
+    $('#messages #' + username.replace(/\s/g, '')).remove();
+  })
+
   socket.on('newPrivateMessage', function (id, msg, username) {
     $('#privateMessages' + id).append('<li><b>' + username + '</b>: ' + msg + '</li>');
     AddNotification(id, username);
@@ -67,9 +75,12 @@ $(function () {
 
 function IsTyping() {
   if (isTyping) {
+    if ($('#m').val() == '') {
+      isTyping = false;
+      socket.emit('stoppedTyping');
+    };
     return;
   }
-
   isTyping = true;
   socket.emit('typing');
 }
