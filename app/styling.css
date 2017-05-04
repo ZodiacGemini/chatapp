@@ -62,7 +62,7 @@
         cursor: default;
     }
     
-    #generalChat form {
+    form {
       padding: 3px;
       position: fixed;
       bottom: 0;
@@ -73,7 +73,7 @@
       z-index: 2000;
     }
     
-    #generalChat form input {
+    form input {
       border: 2px solid black;
       padding: 10px;
       width: 88%;
@@ -82,7 +82,7 @@
       font-size: 16px;
     }
     
-    #generalChat form button {
+    form button {
       width: 11%;
       background: rgb(130, 224, 255);
       border: 2px solid rgb(130, 224, 255);
@@ -97,7 +97,7 @@
       background-color: hotpink !important;
     }
     
-    #messages {
+    #messages, .privateChatUl {
       list-style-type: none;
       margin: 0;
       padding: 0;
@@ -107,12 +107,13 @@
       margin-top: 24px;
     }
 
-        #messages li {
+        #messages li, .privateChatUl li {
             padding: 5px 10px;
             font-size: 20px;
+            word-wrap: break-word;
         }
         
-        #messages li:nth-child(odd) {
+        #messages li:nth-child(odd), .privateChatUl li:nth-child(odd) {
             background: #eee;
         }
     
@@ -148,6 +149,7 @@
         font-size: 16px;
         padding-bottom: 5px;
         cursor: pointer;
+        word-wrap: break-word;
     }
 
     #usersOnlineDiv {
@@ -186,19 +188,29 @@
         font-weight: bold;
         text-align: center;
         color: white;
-        z-index: 3000;
+        z-index: 100;
     }
 
-    .ToggleGeneralButton {
-        width: 90%;
-        height: 30px;
+    .ToggleGeneralButton, .PrivateChatButton {
+        width: 100%;
+        min-height: 30px;
+        color: white;
+        background-color: goldenrod;
+        font-size: 18px;
+        font-weight: bold;
+        word-wrap: break-word;
+    }
+
+    .ToggleGeneralButtonFalse, .PrivateChatButtonFalse {
+        width: 100%;
+        min-height: 30px;
+        font-size: 14px;
+        color: goldenrod;   
         background-color: white;
+        word-wrap: break-word;
     }
-
     .ToggleGeneralButtonFalse {
-        width: 90%;
-        height: 30px;
-        background-color: #13a8af;
+        font-size: 16px;
     }
 
     #currentChatName {
@@ -207,10 +219,4 @@
         top: 0;
         margin-left: 200px;
         z-index: 2000;
-    }
-
-    .newPM {
-        float: left;
-        margin-top: 500px;
-
     }

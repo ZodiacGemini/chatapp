@@ -9,6 +9,7 @@
   "author": "Alexander OCH ENDAST Alexander",
   "license": "MIT",
   "dependencies": {
+    "emojify.js": "^1.1.0",
     "express": "^4.15.2",
     "socket.io": "^1.7.3"
   }

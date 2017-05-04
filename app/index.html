@@ -18,8 +18,8 @@
     <div id="backgroundBottom"></div>
     <div id="defaultChat"></div>
     <div id="chatSelection">
-      <p>Choose Chat</p>
-      <button id="generalButtonId" class="ToggleGeneralButton" onclick="ToggleGeneral()">General</button>
+      <p style="margin: 5px 0px;">Choose Chat</p>
+      <button messageCount=0 id="toggleGeneralButton" class="ToggleGeneralButton" onclick="ToggleGeneral()"><b>General</b></button>
     </div>
     <p id="currentChatName">Current Chat: <b>General</b></p>
     <div id="usersOnlineDiv">
@@ -27,9 +27,9 @@
       <ul id="usersOnlineList">
       </ul>
     </div>
-    <div id="generalChat">
+    <div id="generalChat" class="chatRoom">
       <div id="privateChat"></div>
-      <ul id="messages"></ul>
+      <ul id="messages" class="privateChatUl"></ul>
       <form id="msgForm" action="">
         <input id="m" placeholder="Write message..." autocomplete="off" oninput="IsTyping()" /><button>Send</button>
       </form>

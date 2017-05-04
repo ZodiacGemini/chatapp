@@ -24,10 +24,8 @@ io.on('connection', function (socket) {
     io.emit('joined', { onlineUsers: onlineUsers, message: " connected", username: socket.username })
   });
 
-
   socket.on('chat message', function (msg) {
     socket.broadcast.emit('chat message', { username: socket.username, message: ": " + msg });
-
   });
 
   socket.on('disconnect', function () {
@@ -39,7 +37,6 @@ io.on('connection', function (socket) {
     });
     if (index !== -1)
       onlineUsers.splice(index, 1);
-
     io.emit('disconnect', { username: socket.username, message: " disconnected" });
   });
 
