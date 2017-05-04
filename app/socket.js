@@ -20,7 +20,6 @@ $(function () {
     $('#m').val('');
 
     AutoScrollGeneral();
-
     isTyping = false;
     return false;
   });
