@@ -7,10 +7,11 @@ function LogIn() {
 }
 $(function () {
 
+
   $('#msgForm').submit(function () {
     socket.emit('chat message', $('#m').val());
     $('#messages').append($('<li/>', {
-      html: '<p><b>You wrote</b>: ' + $('#m').val() + '</p>',
+      html: '<p><b>You</b>: ' + $('#m').val() + '</p>',
       class: 'ownage'
     }));
     $('#m').val('');
@@ -49,8 +50,12 @@ $(function () {
     }));
   });
 
-  socket.on('startPrivateChat', function() {
-    $('#privateChat').append('<p> hej hopp </p>');
+  socket.on('newPrivateMessage', function (id, msg, username) {
+    $('#privateMessages' + id).append('<li><b>'+ username +'</b>: ' + msg + '</li>');
+  });
+
+  socket.on('startPrivateChat', function (id, username) {
+    CreateNewChat(id, username);
   });
 });
 
@@ -64,13 +69,50 @@ function IsTyping() {
 }
 
 $(document).on('click', '#usersOnlineList', function (data) {
-  console.log(data.target);
   var id = data.target.getAttribute('socket-id');
-  console.log(id);
-  $('#privateChat').append('<p> hej hopp </p>');
-  socket.emit('startPrivateChat', id);
+  var username = data.target.getAttribute('id');
+  
+  var checkIfExisting = $('#privateMessages' + id).val();
+  if (checkIfExisting !== '') {
+    CreateNewChat(id, username);
+    socket.emit('startPrivateChat', id);
+  }
 });
 
+
+function CreateNewChat(id, username) {
+  var newId = 'pmForm' + id;
+  var newButton = $('<button/>', { text: 'send' });
+  var newDiv = $('<div/>', { class: 'newPM', id: 'pmDiv' + id });
+  var newInput = $('<input/>', {
+    id: 'pm' + id,
+    placeholder: 'Write private message...',
+    autocomplete: 'off'
+  });
+  var newUl = $('<ul/>', { id: 'privateMessages' + id });
+  var newForm = $('<form/>', {
+    id: newId,
+    action: ''
+  });
+  newForm.append(newInput);
+  newForm.append(newButton);
+  newDiv.append(newUl);
+  newDiv.append(newForm);
+  $('#messageDiv').append(newDiv);
+
+  // Add chat selection button
+  var newRoomBtn = $('<button/>', { text: username, value: id, class: 'ToggleGeneralButton' })
+  $('#chatSelection').append(newRoomBtn);
+
+  $('#' + newId).submit(function () {
+    var msg = $('#pm' + id).val();
+    socket.emit('newPrivateMessage', id, msg);
+    newUl.append('<li><b>You</b>: ' + msg + '</li>');
+    $('#pm' + id).val('');
+    return false;
+  });
+
+}
 
 //FLUM KARDEMUM
 function ToggleGeneral() {
@@ -80,9 +122,16 @@ function ToggleGeneral() {
   AutoScroll();
 }
 
+$(document).on('click', '.ToggleGeneralButton', function (data) {
+  console.log(data.target.value);
+  var id = data.target.value;
+  $('#pmDiv' + id).toggle();
+
+});
+
 function AutoScroll() {
-    var scrollBody = $('body');
-    var extendableContent = $("#messages");
-    var currentHeight = extendableContent.outerHeight();
-    scrollBody.scrollTop(currentHeight);
+  var scrollBody = $('body');
+  var extendableContent = $("#messages");
+  var currentHeight = extendableContent.outerHeight();
+  scrollBody.scrollTop(currentHeight);
 }

@@ -62,7 +62,7 @@
         cursor: default;
     }
     
-    form {
+    #generalChat form {
       padding: 3px;
       position: fixed;
       bottom: 0;
@@ -73,7 +73,7 @@
       z-index: 2000;
     }
     
-    form input {
+    #generalChat form input {
       border: 2px solid black;
       padding: 10px;
       width: 88%;
@@ -82,7 +82,7 @@
       font-size: 16px;
     }
     
-    form button {
+    #generalChat form button {
       width: 11%;
       background: rgb(130, 224, 255);
       border: 2px solid rgb(130, 224, 255);
@@ -143,10 +143,11 @@
     }
 
     #usersOnlineList li {
-        list-style-position: inside;
+        list-style-position: outside;
         list-style-image: url(http://i.imgur.com/BWb5oyk.png);
         font-size: 16px;
         padding-bottom: 5px;
+        cursor: pointer;
     }
 
     #usersOnlineDiv {
@@ -206,4 +207,10 @@
         top: 0;
         margin-left: 200px;
         z-index: 2000;
+    }
+
+    .newPM {
+        float: left;
+        margin-top: 500px;
+
     }

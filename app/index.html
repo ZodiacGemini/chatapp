@@ -16,6 +16,7 @@
   <div id="messageDiv" hidden="hidden">
     <div id="backgroundTop"></div>
     <div id="backgroundBottom"></div>
+    <div id="defaultChat"></div>
     <div id="chatSelection">
       <p>Choose Chat</p>
       <button id="generalButtonId" class="ToggleGeneralButton" onclick="ToggleGeneral()">General</button>
@@ -26,10 +27,8 @@
       <ul id="usersOnlineList">
       </ul>
     </div>
-    <div id="hideCurrent">
+    <div id="generalChat">
       <div id="privateChat"></div>
-      <div id="defaultChat">
-      </div>
       <ul id="messages"></ul>
       <form id="msgForm" action="">
         <input id="m" placeholder="Write message..." autocomplete="off" oninput="IsTyping()" /><button>Send</button>
