@@ -21,7 +21,7 @@ io.on('connection', function(socket){
     socket.username = username;
     onlineUsers.push({username: socket.username, socketId: socket.id})
     isLoggedIn = true;
-    io.emit('joined', {onlineUsers: onlineUsers, message : ": connected", username: socket.username})
+    io.emit('joined', {onlineUsers: onlineUsers, message : " connected", username: socket.username})
   });
 
 
@@ -40,11 +40,11 @@ io.on('connection', function(socket){
     if(index !== -1)
       onlineUsers.splice(index, 1);
 
-    io.emit('disconnect', {username: socket.username, message : ": disconnected"});
+    io.emit('disconnect', {username: socket.username, message : " disconnected"});
   });
 
   socket.on('typing', function(){
-    socket.broadcast.emit('typing', {username: socket.username, message : " is typing"});
+    socket.broadcast.emit('typing', {username: socket.username, message : " is typing..."});
   });
   
   socket.on('startPrivateChat', function(id) {

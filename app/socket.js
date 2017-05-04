@@ -3,38 +3,38 @@ var socket = io();
 function LogIn() {
   socket.emit('login', $('#login').val());
   $('#messageDiv').toggle();
-  $('#hideMe').hide();
+  $('#loginForm').hide();
 }
 $(function () {
 
   $('#msgForm').submit(function () {
     socket.emit('chat message', $('#m').val());
     $('#messages').append($('<li/>', {
-      text: "You wrote: " + $('#m').val(),
+      html: '<p><b>You wrote</b>: ' + $('#m').val() + '</p>',
       class: 'ownage'
     }));
-    // $('#messages').scrollTop($('#messages')[0].scrollHeight);
     $('#m').val('');
+    AutoScroll();
     isTyping = false;
     return false;
   });
 
   socket.on('chat message', function (msg) {
-    $('#messages').append($('<li>').text(msg.username + msg.message));
+    $('#messages').append($('<li>').html('<p><b>' + msg.username + '</b>' + msg.message + '</p>'));
     $('#messages #' + msg.username.replace(/\s/g, '')).remove();
+    AutoScroll();
   });
 
   socket.on('disconnect', function (msg) {
-    $('#messages').append($('<li>').text(msg.username + msg.message));
-    $('#usersOnline #' + msg.username.replace(/\s/g, '')).remove();
+    $('#messages').append($('<li>').html('<p><b>' + msg.username + '</b>' + msg.message + '</p>'));
+    $('#usersOnlineList #' + msg.username.replace(/\s/g, '')).remove();
   });
 
   socket.on('joined', function (msg) {
-    $('#messages').append($('<li>').text(msg.username + msg.message));
-    $('#usersOnline').empty();
-    $('#usersOnline').append('<li><strong>Users Online</strong></li>')
+    $('#messages').append($('<li>').html('<p><b>' + msg.username + '</b>' + msg.message + '</p>'));
+    $('#usersOnlineList').empty();
     msg.onlineUsers.forEach(function (element) {
-      $('#usersOnline').append($('<li/>', {
+      $('#usersOnlineList').append($('<li/>', {
         text: element.username,
         id: element.username.replace(/\s/g, ''),
         'socket-id': element.socketId
@@ -44,7 +44,7 @@ $(function () {
 
   socket.on('typing', function (msg) {
     $('#messages').append($('<li/>', {
-      text: msg.username + msg.message,
+      html: '<p><b>' + msg.username + '</b>' + msg.message + '</p>',
       id: msg.username.replace(/\s/g, '')
     }));
   });
@@ -63,10 +63,26 @@ function IsTyping() {
   socket.emit('typing');
 }
 
-$(document).on('click', '#usersOnline', function (data) {
+$(document).on('click', '#usersOnlineList', function (data) {
   console.log(data.target);
   var id = data.target.getAttribute('socket-id');
   console.log(id);
   $('#privateChat').append('<p> hej hopp </p>');
   socket.emit('startPrivateChat', id);
 });
+
+
+//FLUM KARDEMUM
+function ToggleGeneral() {
+  $('#hideCurrent').toggle();
+  $('#generalButtonId').toggleClass('ToggleGeneralButtonFalse', 'ToggleGeneralButton');
+  $('#currentChatName').html('<p>Current Chat: <b>General</b></p>');
+  AutoScroll();
+}
+
+function AutoScroll() {
+    var scrollBody = $('body');
+    var extendableContent = $("#messages");
+    var currentHeight = extendableContent.outerHeight();
+    scrollBody.scrollTop(currentHeight);
+}
