@@ -1,10 +1,22 @@
 var isTyping = false;
 var socket = io();
 
-$('#loginSubmit').submit(function () {
-  socket.emit('login', $('#login').val());
-  $('#messageDiv').toggle();
-  $('#loginForm').hide();
+$('#loginSubmit').submit(function (event) {
+  console.log($('#login').val(), $('#loginpw').val())
+
+  socket.emit('login', $('#login').val(), $('#loginpw').val());
+
+  socket.on('login', function (loginMessage) {
+    event.stopImmediatePropagation();
+    $('#wrong').empty();
+    $('#wrong').append('<p style="color: red; font-size: 200px; text-align: center;">Wrong Password</p>');
+    return false;
+  })
+  socket.on('successful', function () {
+    $('#messageDiv').show();
+    $('#loginForm').hide();
+    return false;
+  })
   return false;
 });
 
@@ -63,7 +75,7 @@ $(function () {
   })
 
   socket.on('newPrivateMessage', function (id, msg, username) {
-    $('#privateMessages' + id).append('<li><b>' + username + '</b>: ' + msg + '</li>');
+    $('#privateMessages' + username).append('<li><b>' + username + '</b>: ' + msg + '</li>');
     AddNotification(id, username);
   });
 
@@ -88,15 +100,15 @@ $(document).on('click', '#usersOnlineList', function (data) {
   var id = data.target.getAttribute('socket-id');
   var username = data.target.getAttribute('id');
 
-  var checkIfExisting = $('#privateMessages' + id).val();
+  var checkIfExisting = $('#privateMessages' + username).val();
   if (checkIfExisting !== '') {
     CreateNewChat(id, username);
     HideAllExceptThis(id, username);
     socket.emit('startPrivateChat', id);
   } else {
     HideAllExceptThis(id, username);
-    $('#privateChatButton' + id).attr('messageCount', 0);
-    $('#privateChatButton' + id).text(username);
+    $('#privateChatButton' + username).attr('messageCount', 0);
+    $('#privateChatButton' + username).text(username);
   }
 });
 
@@ -109,26 +121,26 @@ $(document).on('click', '.PrivateChatButtonFalse', function (data) {
   var id = data.target.value;
   var username = data.target.getAttribute('userName');
   HideAllExceptThis(id, username);
-  $('#privateChatButton' + id).attr('messageCount', 0);
-  $('#privateChatButton' + id).text(username);
+  $('#privateChatButton' + username).attr('messageCount', 0);
+  $('#privateChatButton' + username).text(username);
 });
 
 
 function CreateNewChat(id, username) {
-  var newId = 'pmForm' + id;
+  var newId = 'pmForm' + username;
   var newButton = $('<button/>', { text: 'Send' });
   var newDiv = $('<div/>', {
     class: 'chatRoom',
-    id: 'privateChatDiv' + id,
+    id: 'privateChatDiv' + username,
     hidden: 'hidden'
   });
   var newInput = $('<input/>', {
-    id: 'pm' + id,
+    id: 'pm' + username,
     placeholder: 'Write private message...',
     autocomplete: 'off'
   });
   var newUl = $('<ul/>', {
-    id: 'privateMessages' + id,
+    id: 'privateMessages' + username,
     class: 'privateChatUl'
   });
   var newForm = $('<form/>', {
@@ -140,26 +152,33 @@ function CreateNewChat(id, username) {
   newDiv.append(newUl);
   newDiv.append(newForm);
   $('#messageDiv').append(newDiv);
-  var checkButtons = $('.PrivateChatButton')
+  var buttonExist = false;
+
+  $('.PrivateChatButton').each(function (index, value) {
+    if (value.id == 'privateChatButton' + username)
+      buttonExist = true;
+  });
 
   // Add chat selection button
-  var newRoomBtn = $('<button/>', {
-    text: username,
-    value: id,
-    class: 'PrivateChatButtonFalse',
-    id: 'privateChatButton' + id,
-    'messageCount': 0,
-    'userName': username
-  });
-  $('#chatSelection').append(newRoomBtn);
+  if (!buttonExist) {
+    var newRoomBtn = $('<button/>', {
+      text: username,
+      value: id,
+      class: 'PrivateChatButtonFalse',
+      id: 'privateChatButton' + username,
+      'messageCount': 0,
+      'userName': username
+    });
+    $('#chatSelection').append(newRoomBtn);
+  }
 
   //Add function for submitting new private messages
   $('#' + newId).submit(function () {
-    var msg = $('#pm' + id).val();
+    var msg = $('#pm' + username).val();
     socket.emit('newPrivateMessage', id, msg);
     newUl.append('<li><b>You</b>: ' + msg + '</li>');
-    $('#pm' + id).val('');
-    AutoScroll(id);
+    $('#pm' + username).val('');
+    AutoScroll(username);
     return false;
   });
 }
@@ -183,16 +202,16 @@ function HideAllExceptThis(id, username) {
     value.className = 'PrivateChatButtonFalse';
   });
   $('.chatRoom').hide();
-  $('#privateChatDiv' + id).toggle();
+  $('#privateChatDiv' + username).toggle();
   $('#currentChatName').html('<p>Current Chat: <b>' + username + '</b></p>');
   document.getElementById('toggleGeneralButton').className = 'ToggleGeneralButtonFalse';
-  document.getElementById('privateChatButton' + id).className = 'PrivateChatButton';
-  AutoScroll(id);
+  document.getElementById('privateChatButton' + username).className = 'PrivateChatButton';
+  AutoScroll(username);
 }
 
-function AutoScroll(id) {
+function AutoScroll(username) {
   var scrollBody = $('body');
-  var extendableContent = $("#privateMessages" + id);
+  var extendableContent = $("#privateMessages" + username);
   var currentHeight = extendableContent.outerHeight();
   scrollBody.scrollTop(currentHeight);
 }
@@ -205,11 +224,11 @@ function AutoScrollGeneral() {
 }
 
 function AddNotification(id, username) {
-  if ($('#privateChatButton' + id).hasClass('PrivateChatButtonFalse')) {
-    var count = $('#privateChatButton' + id).attr('messageCount');
+  if ($('#privateChatButton' + username).hasClass('PrivateChatButtonFalse')) {
+    var count = $('#privateChatButton' + username).attr('messageCount');
     count++;
-    $('#privateChatButton' + id).attr('messageCount', count);
-    $('#privateChatButton' + id).text(username + ' ' + count);
+    $('#privateChatButton' + username).attr('messageCount', count);
+    $('#privateChatButton' + username).text(username + ' ' + count);
   }
 }
 
