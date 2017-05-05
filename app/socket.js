@@ -100,6 +100,19 @@ $(document).on('click', '#usersOnlineList', function (data) {
   }
 });
 
+$(document).on('contextmenu', '#usersOnlineList', function (data) {
+  data.preventDefault();
+  alert(data.target.getAttribute('id'));
+});
+
+$(document).on('click', '.PrivateChatButtonFalse', function (data) {
+  var id = data.target.value;
+  var username = data.target.getAttribute('userName');
+  HideAllExceptThis(id, username);
+  $('#privateChatButton' + id).attr('messageCount', 0);
+  $('#privateChatButton' + id).text(username);
+});
+
 
 function CreateNewChat(id, username) {
   var newId = 'pmForm' + id;
@@ -164,14 +177,6 @@ function ToggleGeneral() {
   $('#toggleGeneralButton').html('<p><b>General</b></p>');
   AutoScrollGeneral();
 }
-
-$(document).on('click', '.PrivateChatButtonFalse', function (data) {
-  var id = data.target.value;
-  var username = data.target.getAttribute('userName');
-  HideAllExceptThis(id, username);
-  $('#privateChatButton' + id).attr('messageCount', 0);
-  $('#privateChatButton' + id).text(username);
-});
 
 function HideAllExceptThis(id, username) {
   $('.PrivateChatButton').each(function (index, value) {
